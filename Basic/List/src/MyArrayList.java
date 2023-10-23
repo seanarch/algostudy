@@ -22,7 +22,7 @@ public class MyArrayList<E> implements Iterable<E> {
     // 增
     public void addLast(E e) {
         int cap = data.length;
-        // 看 data 数组容量够不够
+        // check if capacity is enough
         if (size == cap) {
             resize(2 * cap);
         }
@@ -32,8 +32,11 @@ public class MyArrayList<E> implements Iterable<E> {
     }
 
     public void add(int index, E e) {
-         checkPositionIndex(index);
-
+        checkPositionIndex(index);
+        // data[index] => data[index + 1] 
+        System.arraycopy(data, index, data, index + 1, size - index); 
+        data[index] = e; 
+        size++;
     }
 
     public void addFirst(E e) {
@@ -46,6 +49,7 @@ public class MyArrayList<E> implements Iterable<E> {
          if (isEmpty()) {
             throw new NoSuchElementException();
          }
+         int cap = data.length;
          // check if need to resize
          if (size < cap / 4) {
             resize(cap / 2);
@@ -59,11 +63,32 @@ public class MyArrayList<E> implements Iterable<E> {
     }
 
     public E remove(int index) {
-       
+       checkPositionIndex(index); 
+       int cap = data.length;
+        // check if need to resize
+         if (size < cap / 4) {
+            resize(cap / 2);
+         }
+       E deletedVal = data[index]; 
+       // data[index + 1] => data[index] 
+       System.arraycopy(data, index + 1, data, index, size - index - 1);
+       // remove last 
+        data[size - 1] = null;
+        size--;
+        return deletedVal;
     }
 
     public E removeFirst() {
-        
+        checkPositionIndex(0); 
+        int cap = data.length; 
+        if(size < cap / 4) {
+            resize(cap / 2); 
+        }
+        E deletedVal = data[0]; 
+        System.arraycopy(data, 1, data, 0, size - 1); 
+        data[size - 1] = null; 
+        size--; 
+        return deletedVal;  
     }
 
     // 查
@@ -79,43 +104,53 @@ public class MyArrayList<E> implements Iterable<E> {
         data[index] = element; 
 
         return oldVal;
-         
     }
 
     // 工具方法
     public int size() {
-        
+        return data.length;
     }
 
     public boolean isEmpty() {
-        
+        return data.length == 0;
     }
 
     // change data capacity to newCap
     private void resize(int newCap) {
-         
+        if (size > newCap) {
+            return;
+        }
+        E[] temp = (E[]) new Object[newCap];
+
+        for (int i = 0; i < size; i++) {
+            temp[i] = data[i];
+        }
+        // System.arraycopy(data, 0, temp, 0, size);
+        data = temp;
     }
 
     private boolean isElementIndex(int index) {
-        
+        return index >= 0 && index < size;
     }
 
     private boolean isPositionIndex(int index) {
-        
+        return index >= 0 && index <= size;
     }
 
-    /**
+/**
      * 检查 index 索引位置是否可以存在元素
      */
     private void checkElementIndex(int index) {
-         
+        if (!isElementIndex(index))
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
     }
 
     /**
      * 检查 index 索引位置是否可以添加元素
      */
     private void checkPositionIndex(int index) {
- 
+        if (!isPositionIndex(index))
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
     }
 
     @Override
@@ -144,7 +179,8 @@ public class MyArrayList<E> implements Iterable<E> {
     public static void main(String[] args) {
         // 初始容量设置为 3
         MyArrayList<Integer> arr = new MyArrayList<>(3);
-
+        System.out.println(arr.size());
+        System.out.println(arr.isEmpty());
  
     }
 
