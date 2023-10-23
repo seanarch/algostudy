@@ -32,7 +32,8 @@ public class MyArrayList<E> implements Iterable<E> {
     }
 
     public void add(int index, E e) {
-         
+         checkPositionIndex(index);
+
     }
 
     public void addFirst(E e) {
@@ -41,7 +42,20 @@ public class MyArrayList<E> implements Iterable<E> {
 
     // 删
     public E removeLast() {
-         
+        // check if empty
+         if (isEmpty()) {
+            throw new NoSuchElementException();
+         }
+         // check if need to resize
+         if (size < cap / 4) {
+            resize(cap / 2);
+         }
+
+         E deletedVal = data[size-1];
+         // set last as null, for garbage collection
+         data[size - 1] = null; 
+         size--;
+         return deletedVal;
     }
 
     public E remove(int index) {
@@ -54,11 +68,17 @@ public class MyArrayList<E> implements Iterable<E> {
 
     // 查
     public E get(int index) {
-         
+        checkElementIndex(index);
+         return data[index];
     }
 
-    // 改
+    // update - set and return previous value
     public E set(int index, E element) {
+        checkElementIndex(index); 
+        E oldVal = data[index];
+        data[index] = element; 
+
+        return oldVal;
          
     }
 
@@ -71,7 +91,7 @@ public class MyArrayList<E> implements Iterable<E> {
         
     }
 
-    // 将 data 的容量改为 newCap
+    // change data capacity to newCap
     private void resize(int newCap) {
          
     }
