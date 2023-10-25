@@ -21,44 +21,93 @@ public class MyArrayList<E> implements Iterable<E> {
 
     // 增
     public void add(int index, E e) {
-        
+        checkPositionIndex(index);
+         
+        System.arraycopy(data, index, data, index + 1, size - index); 
+        data[index] = e; 
+        size++;
+
     }
 
     public void addLast(E e) {
-        
+        int cap = data.length; 
+        if (size == cap) {
+            resize(size * 2);
+        }
+        data[size] = e; 
+        size++;
+
     }
 
     public void addFirst(E e) {
+        int cap = data.length; 
+        if (size == cap) resize(size * 2); 
+        System.arraycopy(data, 0, data, 1, size);
+        data[0] = e; 
+        size++;
     }
 
     // 删
     public E remove(int index) {
-        
+        checkElementIndex(index); 
+        int cap = data.length;
+        if (size < cap / 4) size = cap / 2; 
+
+        E deletedVal = data[index]; 
+        System.arraycopy(data, index + 1, data, -1, size - index - 1); 
+        return deletedVal;
     }
 
     public E removeFirst() {
-        return remove(0);
+        if (isEmpty()) throw new NoSuchElementException();
+        int cap = data.length;
+        if (size < cap / 4) resize(cap / 2);
+
+        E deletedVal = data[0];
+        System.arraycopy(data, 1, data, 0, size - 1);
+        size--;
+        return deletedVal;
     }
 
     public E removeLast() {
-        
+        if (isEmpty()) throw new NoSuchElementException(); 
+        int cap = data.length; 
+        if(size < cap / 4) resize(cap / 2); 
+
+        E deletedVal = data[size]; 
+        data[size] = null; 
+        size--;
+        return deletedVal; 
     }
 
     // 查
     public E get(int index) {
-        
+        checkElementIndex(index); 
+
+        return data[index]; 
     }
 
     // 改
     public E set(int index, E element) {
-       
+       checkElementIndex(index);
+
+       E oldVal = data[index];  
+       data[index] = element; 
+
+        return oldVal; 
     }
 
 
     // 工具方法
     // 将 data 的容量改为 newCap
     private void resize(int newCap) {
-        
+        if size > newCap return; 
+
+        E[] temp = (E[]) new Object[newCap]; 
+        data[size - 1] = null; 
+        size--;
+        return deletedVal;
+
     }
 
     public int size() {
